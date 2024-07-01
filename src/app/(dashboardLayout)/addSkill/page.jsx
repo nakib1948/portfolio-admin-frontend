@@ -20,7 +20,7 @@ import { getUserInfo } from "@/services/authService";
 import HeaderSection from "@/Components/HeaderSection/HeaderSection";
 
 const defaultTheme = createTheme();
-const AddProjectPage = () => {
+const AddSkill = () => {
   const {
     register,
     handleSubmit,
@@ -59,7 +59,7 @@ const AddProjectPage = () => {
   return (
     <>
       <Container>
-        <HeaderSection title="Add a project" />
+        <HeaderSection title="Add Skill" />
         <ThemeProvider theme={defaultTheme}>
           <Container component="main" maxWidth="md">
             <CssBaseline />
@@ -77,10 +77,10 @@ const AddProjectPage = () => {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         id="outlined-basic"
-                        label="Website Name"
+                        label="Skill Name"
                         variant="outlined"
                         {...register("name", {
-                          required: "website name is required",
+                          required: "Skill name is required",
                         })}
                         fullWidth
                         size="small"
@@ -91,46 +91,23 @@ const AddProjectPage = () => {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         id="outlined-basic"
-                        label="Client Site Github Link"
+                        label="percentage"
+                        type="number"
+                        inputProps={{ min: 0, max: 100 }}
                         variant="outlined"
-                        {...register("client", {
-                          required: "client site Github link is required",
+                        {...register("percentage", {
+                          required: "percentage name is required",
+                          validate: {
+                            value: (value) => (Number(value) >= 0 && Number(value) <= 100) || "Percentage must be between 0 and 100",
+                          },
                         })}
                         fullWidth
                         size="small"
-                        error={!!errors.client}
-                        helperText={errors.client?.message}
+                        error={!!errors.percentage}
+                        helperText={errors.percentage?.message}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Server Site Github Link"
-                        variant="outlined"
-                        {...register("server", {
-                          required: "Server Site Github Link is required",
-                        })}
-                        fullWidth
-                        size="small"
-                        error={!!errors.server}
-                        helperText={errors.server?.message}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Website Link"
-                        variant="outlined"
-                        {...register("liveSite", {
-                          required: "liveSite is required",
-                        })}
-                        fullWidth
-                        size="small"
-                        error={!!errors.liveSite}
-                        helperText={errors.liveSite?.message}
-                      />
-                    </Grid>
-
+                  
                     <Grid item xs={12} sm={6}>
                       <Button
                         sx={{ py: 1 }}
@@ -138,7 +115,7 @@ const AddProjectPage = () => {
                         fullWidth
                         component="label"
                       >
-                        Upload Website Image
+                        Upload Cover Image
                         <input
                           {...register("image", {
                             required: "image is required",
@@ -152,57 +129,6 @@ const AddProjectPage = () => {
                           {errors.image.message}
                         </small>
                       )}
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Button
-                        sx={{ py: 1 }}
-                        variant="contained"
-                        fullWidth
-                        component="label"
-                      >
-                        Upload Website Cover Image
-                        <input
-                          {...register("coverImage", {
-                            required: "coverImage is required",
-                          })}
-                          type="file"
-                          hidden
-                        />
-                      </Button>
-                      {errors.coverImage && (
-                        <small className="text-red-500" role="alert">
-                          {errors.coverImage.message}
-                        </small>
-                      )}
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Website Description"
-                        multiline
-                        variant="outlined"
-                        {...register("description", {
-                          required: "description is required",
-                        })}
-                        fullWidth
-                        error={!!errors.description}
-                        helperText={errors.description?.message}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Website Details"
-                        multiline
-                        variant="outlined"
-                        {...register("details", {
-                          required: "details is required",
-                        })}
-                        fullWidth
-                        error={!!errors.details}
-                        helperText={errors.details?.message}
-                      />
                     </Grid>
                   </Grid>
                   <Button
@@ -223,4 +149,4 @@ const AddProjectPage = () => {
   );
 };
 
-export default AddProjectPage;
+export default AddSkill;

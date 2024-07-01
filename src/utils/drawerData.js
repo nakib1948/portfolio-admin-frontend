@@ -27,7 +27,7 @@ export const drawerItems = () => {
             icon: InventoryIcon,
         },
         {
-            title: "Update link",
+            title: "Update Link",
             path: `/updateLink`,
             icon: AddLinkIcon,
         },
