@@ -13,13 +13,12 @@ import {
   Select,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { imgUpload } from "@/services/imgUpload";
+import { imgUpload } from "../../../services/imgUpload";
 import { toast } from "react-hot-toast";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useForm, FieldValues, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
-import { getUserInfo } from "@/services/authService";
-import HeaderSection from "@/Components/HeaderSection/HeaderSection";
+import HeaderSection from "../../../components/HeaderSection/HeaderSection";
 
 const defaultTheme = createTheme();
 const AddBlog = ({ placeholder }) => {
@@ -42,31 +41,34 @@ const AddBlog = ({ placeholder }) => {
   } = useForm();
   //   const [createFoundItem] = useCreateFoundItemMutation();
   const handleAddProject = async (values) => {
-    console.log(values)
-    //     const user = await getUserInfo();
-    //     const imgUrl = await imgUpload(values.image[0]);
-    //     const data: FieldValues = {
-    //       itemCategory: values.itemCategory,
-    //       foundItemName: values.foundItemName,
-    //       description: values.description,
-    //       date: values.date,
-    //       location: values.location,
-    //       district: values.district,
-    //       email: user.email,
-    //       phone: values.phone,
-    //       image: imgUrl,
-    //     };
-    //     try {
-    //       const res = await createFoundItem(data);
-    //       if (res.data.success) {
-    //         toast.success(res.data.message);
-    //         reset();
-    //       } else {
-    //         toast.error(res.data.message);
-    //       }
-    //     } catch (err: any) {
-    //       toast.error(err.message);
-    //     }
+    setLoading(true);
+
+    try {
+      const imgUrl = await imgUpload(values.image[0]);
+      const coverImage = await imgUpload(values.coverImage[0]);
+      const data = {
+        name: values.name,
+        description: values.description,
+        details: values.details,
+        client: values.client,
+        server: values.server,
+        liveSite: values.liveSite,
+        coverImage,
+        image: [imgUrl],
+      };
+      const res = await addProject(data);
+      if (res.data.success) {
+        toast.success(res.data.message);
+        reset();
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+    finally {
+      setLoading(false); 
+    }
   };
   return (
     <Container>

@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { Toaster } from "react-hot-toast";
-import Providers from '@/lib/Providers/Providers';
+import Providers from '../lib/Providers/Providers';
 
 const inter = Inter({ subsets: ['latin'] })
 

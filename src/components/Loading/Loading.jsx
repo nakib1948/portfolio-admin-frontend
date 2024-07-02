@@ -1,12 +1,17 @@
+import { RotatingLines } from 'react-loader-spinner'
 const Loading = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen p-5 bg-gray-100 min-w-screen">
-      <div className="flex space-x-2 animate-pulse">
-        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-        <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-      </div>
-    </div>
+    <RotatingLines
+      visible={true}
+      height="96"
+      width="96"
+      color="grey"
+      strokeWidth="5"
+      animationDuration="0.75"
+      ariaLabel="rotating-lines-loading"
+      wrapperStyle={{}}
+      wrapperClass=""
+    />
   );
 };
 

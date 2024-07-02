@@ -1,5 +1,5 @@
-import Dashboard from "@/Components/Dashboard/Dashboard";
 
+import Dashboard from "../../components/Dashboard/Dashboard"
 const layout = ({ children }) => {
   return <Dashboard>{children}</Dashboard>;
 };

@@ -9,8 +9,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Sidebar from "./Sidebar";
 import { Button } from "@mui/material";
-import { removeUser } from "@/services/authService";
-import { deleteCookies } from "@/services/deleteCookies";
+import { removeUser } from "../../services/authService";
+import { deleteCookies } from "../../services/deleteCookies";
 import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;

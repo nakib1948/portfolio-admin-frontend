@@ -2,7 +2,7 @@ import { Box, Divider, List, Stack, Typography } from "@mui/material";
 import * as React from "react";
 import Link from "next/link";
 import SideBarItem from "./SidebarModule";
-import { drawerItems } from "@/utils/drawerData";
+import { drawerItems } from "../../utils/drawerData";
 const Sidebar = () => {
   return (
     <Box>

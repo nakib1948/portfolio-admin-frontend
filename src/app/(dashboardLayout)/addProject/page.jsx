@@ -1,60 +1,55 @@
 "use client";
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { imgUpload } from "@/services/imgUpload";
 import { toast } from "react-hot-toast";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useForm, FieldValues, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { TextField } from "@mui/material";
-import { getUserInfo } from "@/services/authService";
-import HeaderSection from "@/Components/HeaderSection/HeaderSection";
+import { imgUpload } from "../../../services/imgUpload";
+import HeaderSection from "../../../components/HeaderSection/HeaderSection";
+import { useAddProjectMutation } from "../../../redux/api/projectApi";
+import { useState } from "react";
+import Loading from "../../../components/Loading/Loading"
 
 const defaultTheme = createTheme();
 const AddProjectPage = () => {
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors },
   } = useForm();
-  //   const [createFoundItem] = useCreateFoundItemMutation();
+  const [addProject] = useAddProjectMutation();
   const handleAddProject = async (values) => {
-    console.log(values)
-    //     const user = await getUserInfo();
-    //     const imgUrl = await imgUpload(values.image[0]);
-    //     const data: FieldValues = {
-    //       itemCategory: values.itemCategory,
-    //       foundItemName: values.foundItemName,
-    //       description: values.description,
-    //       date: values.date,
-    //       location: values.location,
-    //       district: values.district,
-    //       email: user.email,
-    //       phone: values.phone,
-    //       image: imgUrl,
-    //     };
-    //     try {
-    //       const res = await createFoundItem(data);
-    //       if (res.data.success) {
-    //         toast.success(res.data.message);
-    //         reset();
-    //       } else {
-    //         toast.error(res.data.message);
-    //       }
-    //     } catch (err: any) {
-    //       toast.error(err.message);
-    //     }
+    setLoading(true);
+
+    try {
+      const imgUrl = await imgUpload(values.image[0]);
+      const coverImage = await imgUpload(values.coverImage[0]);
+      const data = {
+        name: values.name,
+        description: values.description,
+        details: values.details,
+        client: values.client,
+        server: values.server,
+        liveSite: values.liveSite,
+        coverImage,
+        image: [imgUrl],
+      };
+      const res = await addProject(data);
+      if (res.data.success) {
+        toast.success(res.data.message);
+        reset();
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+    finally {
+      setLoading(false); 
+    }
   };
   return (
     <>
@@ -71,8 +66,9 @@ const AddProjectPage = () => {
                 alignItems: "center",
               }}
             >
+              {loading && <Loading/>}
               <form onSubmit={handleSubmit(handleAddProject)}>
-                <Box >
+                <Box>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField

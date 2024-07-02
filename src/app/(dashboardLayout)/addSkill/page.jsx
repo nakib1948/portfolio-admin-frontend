@@ -11,14 +11,15 @@ import {
   Select,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { imgUpload } from "@/services/imgUpload";
 import { toast } from "react-hot-toast";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useForm, FieldValues, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
-import { getUserInfo } from "@/services/authService";
-import HeaderSection from "@/Components/HeaderSection/HeaderSection";
-
+import HeaderSection from "../../../components/HeaderSection/HeaderSection";
+import { useAddskillMutation } from "../../../redux/api/skillApi";
+import { useState } from "react";
+import Loading from "../../../components/Loading/Loading";
+import { imgUpload } from "../../../services/imgUpload";
 const defaultTheme = createTheme();
 const AddSkill = () => {
   const {
@@ -28,33 +29,29 @@ const AddSkill = () => {
     control,
     formState: { errors },
   } = useForm();
-  //   const [createFoundItem] = useCreateFoundItemMutation();
-  const handleAddProject = async (values) => {
-    console.log(values)
-    //     const user = await getUserInfo();
-    //     const imgUrl = await imgUpload(values.image[0]);
-    //     const data: FieldValues = {
-    //       itemCategory: values.itemCategory,
-    //       foundItemName: values.foundItemName,
-    //       description: values.description,
-    //       date: values.date,
-    //       location: values.location,
-    //       district: values.district,
-    //       email: user.email,
-    //       phone: values.phone,
-    //       image: imgUrl,
-    //     };
-    //     try {
-    //       const res = await createFoundItem(data);
-    //       if (res.data.success) {
-    //         toast.success(res.data.message);
-    //         reset();
-    //       } else {
-    //         toast.error(res.data.message);
-    //       }
-    //     } catch (err: any) {
-    //       toast.error(err.message);
-    //     }
+  const [loading, setLoading] = useState(false);
+  const [addSkill] = useAddskillMutation();
+  const handleAddSkill = async (values) => {
+    setLoading(true);
+    try {
+      const imgUrl = await imgUpload(values.image[0]);
+      const data = {
+        name: values.name,
+        percentage: values.percentage,
+        image: imgUrl,
+      };
+      const res = await addSkill(data);
+      if (res.data.success) {
+        toast.success(res.data.message);
+        reset();
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <>
@@ -71,8 +68,9 @@ const AddSkill = () => {
                 alignItems: "center",
               }}
             >
-              <form onSubmit={handleSubmit(handleAddProject)}>
-                <Box >
+              {loading && <Loading />}
+              <form onSubmit={handleSubmit(handleAddSkill)}>
+                <Box>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
@@ -98,7 +96,9 @@ const AddSkill = () => {
                         {...register("percentage", {
                           required: "percentage name is required",
                           validate: {
-                            value: (value) => (Number(value) >= 0 && Number(value) <= 100) || "Percentage must be between 0 and 100",
+                            value: (value) =>
+                              (Number(value) >= 0 && Number(value) <= 100) ||
+                              "Percentage must be between 0 and 100",
                           },
                         })}
                         fullWidth
@@ -107,7 +107,7 @@ const AddSkill = () => {
                         helperText={errors.percentage?.message}
                       />
                     </Grid>
-                  
+
                     <Grid item xs={12} sm={6}>
                       <Button
                         sx={{ py: 1 }}

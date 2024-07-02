@@ -1,5 +1,5 @@
 "use server";
-import setTokenToCookie from "@/utils/setTokenToCookie";
+import setTokenToCookie from "../utils/setTokenToCookie";
 
 const userLogin = async (data) => {
   const res = await fetch(`http://localhost:5000/api/user/login`, {

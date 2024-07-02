@@ -1,4 +1,4 @@
-import { decodedToken } from "@/utils/jwt";
+import { decodedToken } from "../utils/jwt";
 const tokenKey = "accessToken"
 export const storeUserInfo = async (token) => {
 
