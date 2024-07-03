@@ -7,4 +7,5 @@ export const allTagList = [
    "allSkill",
    "updateSkill",
    "getAllblog",
+   "updatelink",
   ];

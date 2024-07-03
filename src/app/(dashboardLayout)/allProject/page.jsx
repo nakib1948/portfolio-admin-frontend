@@ -1,6 +1,9 @@
 "use client";
 import HeaderSection from "../../../components/HeaderSection/HeaderSection";
-import { useGetAllProjectQuery } from "../../../redux/api/projectApi";
+import {
+  useGetAllProjectQuery,
+  useDeleteProjectMutation,
+} from "../../../redux/api/projectApi";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { toast } from "react-hot-toast";
@@ -9,25 +12,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 const AllProject = () => {
   const { data, isLoading, refetch } = useGetAllProjectQuery(undefined);
-  const router = useRouter()
-  const updateProject = (id)=>{
+  const [deleteProject, { isLoading: isDeleted }] = useDeleteProjectMutation();
+  const router = useRouter();
+  const updateProject = (id) => {
     router.push(`allProject/${id}`);
-  }
-  
+  };
+
   const handleDelete = async (id) => {
-    // const updateData = {
-    //   id,
-    //   status,
-    // };
-    // try {
-    //   const updateResponse = await updateStatus(updateData);
-    //   if (updateResponse.data.success) {
-    //     toast.success(updateResponse.data.message);
-    //   }
-    //   refetch();
-    // } catch (error: any) {
-    //   toast.error(error.message);
-    // }
+    try {
+      const updateResponse = await deleteProject(id);
+      if (updateResponse?.data?.success) {
+        toast.success(updateResponse.data.message);
+      }
+      refetch();
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   const columns = [
     { field: "name", headerName: "Website Name", flex: 1 },
@@ -40,7 +40,7 @@ const AllProject = () => {
       renderCell: ({ row }) => {
         return (
           <>
-            <Button onClick={()=>updateProject(row._id)}>update</Button>
+            <Button onClick={() => updateProject(row._id)}>update</Button>
           </>
         );
       },
@@ -54,7 +54,9 @@ const AllProject = () => {
       renderCell: ({ row }) => {
         return (
           <>
-            <Button sx={{ color: "red" }}>delete</Button>
+            <Button onClick={() => handleDelete(row._id)} sx={{ color: "red" }}>
+              delete
+            </Button>
           </>
         );
       },
@@ -64,6 +66,11 @@ const AllProject = () => {
   return (
     <Box>
       <HeaderSection title="All Project" subTitle="" />
+      {isDeleted && (
+        <Box display="flex" justifyContent="center">
+          <Loading />
+        </Box>
+      )}
       {isLoading ? (
         <Box display="flex" justifyContent="center">
           <Loading />

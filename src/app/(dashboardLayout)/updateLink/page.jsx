@@ -1,23 +1,17 @@
 "use client";
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { imgUpload } from "../../../services/imgUpload";
+import {
+  useGetAlllinkQuery,
+  useUpdatelinkMutation,
+} from "../../../redux/api/linkApi";
 
 import { toast } from "react-hot-toast";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useForm, FieldValues, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { TextField } from "@mui/material";
 import HeaderSection from "../../../components/HeaderSection/HeaderSection";
+import Loading from "../../../components/Loading/Loading";
 
 const defaultTheme = createTheme();
 const UpdateLink = () => {
@@ -25,37 +19,44 @@ const UpdateLink = () => {
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors },
   } = useForm();
-  //   const [createFoundItem] = useCreateFoundItemMutation();
-  const handleAddProject = async (values) => {
-    console.log(values)
-    //     const user = await getUserInfo();
-    //     const imgUrl = await imgUpload(values.image[0]);
-    //     const data: FieldValues = {
-    //       itemCategory: values.itemCategory,
-    //       foundItemName: values.foundItemName,
-    //       description: values.description,
-    //       date: values.date,
-    //       location: values.location,
-    //       district: values.district,
-    //       email: user.email,
-    //       phone: values.phone,
-    //       image: imgUrl,
-    //     };
-    //     try {
-    //       const res = await createFoundItem(data);
-    //       if (res.data.success) {
-    //         toast.success(res.data.message);
-    //         reset();
-    //       } else {
-    //         toast.error(res.data.message);
-    //       }
-    //     } catch (err: any) {
-    //       toast.error(err.message);
-    //     }
+  const { data, isLoading, refetch } = useGetAlllinkQuery(undefined);
+  const [updatelink, { isLoading: updating }] = useUpdatelinkMutation();
+  const handleUpdateLink = async (values) => {
+    try {
+      const alldata = {
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+        facebook: values.facebook,
+        github: values.github,
+        linkdin: values.linkdin,
+        resume: values.resume,
+        cv: values.cv,
+        profileImg: values.profileImg,
+        aboutMeImg: values.aboutMeImg,
+      };
+      const updateResponse = await updatelink({
+        data: alldata,
+        id: data?.data[0]._id,
+      });
+      if (updateResponse?.data?.success) {
+        toast.success(updateResponse.data.message);
+      }
+      refetch();
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <Loading />
+      </Box>
+    );
+  }
+
   return (
     <>
       <Container>
@@ -71,8 +72,9 @@ const UpdateLink = () => {
                 alignItems: "center",
               }}
             >
-              <form onSubmit={handleSubmit(handleAddProject)}>
-                <Box >
+              {updating && <Loading />}
+              <form onSubmit={handleSubmit(handleUpdateLink)}>
+                <Box>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
@@ -85,6 +87,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.email}
+                        defaultValue={data?.data[0].email}
                         helperText={errors.email?.message}
                       />
                     </Grid>
@@ -92,14 +95,14 @@ const UpdateLink = () => {
                       <TextField
                         id="outlined-basic"
                         label="phone"
-                        type="number"
                         variant="outlined"
                         {...register("phone", {
-                          required: "phone name is required",
+                          required: "phone  is required",
                         })}
                         fullWidth
                         size="small"
                         error={!!errors.phone}
+                        defaultValue={data?.data[0].phone}
                         helperText={errors.phone?.message}
                       />
                     </Grid>
@@ -114,6 +117,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.address}
+                        defaultValue={data?.data[0].address}
                         helperText={errors.address?.message}
                       />
                     </Grid>
@@ -128,6 +132,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.facebook}
+                        defaultValue={data?.data[0].facebook}
                         helperText={errors.facebook?.message}
                       />
                     </Grid>
@@ -142,6 +147,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.github}
+                        defaultValue={data?.data[0].github}
                         helperText={errors.github?.message}
                       />
                     </Grid>
@@ -156,6 +162,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.linkdin}
+                        defaultValue={data?.data[0].linkdin}
                         helperText={errors.linkdin?.message}
                       />
                     </Grid>
@@ -170,6 +177,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.resume}
+                        defaultValue={data?.data[0].resume}
                         helperText={errors.resume?.message}
                       />
                     </Grid>
@@ -184,6 +192,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.cv}
+                        defaultValue={data?.data[0].cv}
                         helperText={errors.cv?.message}
                       />
                     </Grid>
@@ -198,6 +207,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.profileImg}
+                        defaultValue={data?.data[0].profileImg}
                         helperText={errors.profileImg?.message}
                       />
                     </Grid>
@@ -212,6 +222,7 @@ const UpdateLink = () => {
                         fullWidth
                         size="small"
                         error={!!errors.aboutMeImg}
+                        defaultValue={data?.data[0].aboutMeImg}
                         helperText={errors.aboutMeImg?.message}
                       />
                     </Grid>
