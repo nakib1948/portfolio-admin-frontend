@@ -10,9 +10,39 @@ export const projectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["addproject"],
     }),
+    getAllProject: build.query({
+      query: () => {
+        return {
+          url: '/project',
+          method: 'GET',
+        };
+      },
+      providesTags: ["getAllProject"],
+    }),
+    getSingleProject: build.query({
+      query: (id) => {
+        return {
+          url: `/project/${id}`,
+          method: "GET",
+        };
+      },
+    }),
+    updateProject: build.mutation({
+      query: (data) => {
+         return {
+            url:  `/project/updateproject/${data.id}`,
+            method: 'PATCH',
+            data:data.data,
+         };
+      },
+      invalidatesTags: ["updateProject"],
+   }),
   }),
 });
 
 export const {
-  useAddProjectMutation
+  useAddProjectMutation,
+  useGetAllProjectQuery,
+  useGetSingleProjectQuery,
+  useUpdateProjectMutation,
 } = projectApi;

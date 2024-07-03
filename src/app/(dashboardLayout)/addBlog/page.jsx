@@ -19,55 +19,55 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useForm, FieldValues, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 import HeaderSection from "../../../components/HeaderSection/HeaderSection";
+import { useAddblogMutation } from "../../../redux/api/blogApi";
+import Loading from "../../../components/Loading/Loading";
 
 const defaultTheme = createTheme();
 const AddBlog = ({ placeholder }) => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
-
-  const config = useMemo(
-    () => ({
-      readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-      placeholder: placeholder || "Start typing...",
-    }),
-    [placeholder]
-  );
+  const [loading, setLoading] = useState(false);
+  const [addblog] = useAddblogMutation();
   const {
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors },
   } = useForm();
-  //   const [createFoundItem] = useCreateFoundItemMutation();
-  const handleAddProject = async (values) => {
-    setLoading(true);
+  const config = useMemo(
+    () => ({
+      readonly: false,
+      placeholder: placeholder || "Start typing...",
+    }),
+    [placeholder]
+  );
 
+  const handleAddBlog = async (values) => {
+    setLoading(true);
     try {
+      const date = new Date();
+      const options = { day: "numeric", month: "long", year: "numeric" };
+      const formattedDate = date.toLocaleDateString("en-US", options);
+
       const imgUrl = await imgUpload(values.image[0]);
-      const coverImage = await imgUpload(values.coverImage[0]);
       const data = {
-        name: values.name,
-        description: values.description,
-        details: values.details,
-        client: values.client,
-        server: values.server,
-        liveSite: values.liveSite,
-        coverImage,
-        image: [imgUrl],
+        title: values.title,
+        description: content,
+        image: imgUrl,
+        date:formattedDate
       };
-      const res = await addProject(data);
+      const res = await addblog(data);
       if (res.data.success) {
         toast.success(res.data.message);
         reset();
+        setContent("")
       } else {
         toast.error(res.data.message);
       }
     } catch (err) {
       toast.error(err.message);
-    }
-    finally {
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -84,9 +84,10 @@ const AddBlog = ({ placeholder }) => {
               alignItems: "center",
             }}
           >
-            <form onSubmit={handleSubmit(handleAddProject)}>
+            {loading && <Loading />}
+            <form onSubmit={handleSubmit(handleAddBlog)}>
               <Box>
-                <Grid  mb={3} container spacing={2}>
+                <Grid mb={3} container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField
                       id="outlined-basic"

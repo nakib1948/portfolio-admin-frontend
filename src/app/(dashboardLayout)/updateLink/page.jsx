@@ -11,12 +11,12 @@ import {
   Select,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { imgUpload } from "@/services/imgUpload";
+import { imgUpload } from "../../../services/imgUpload";
+
 import { toast } from "react-hot-toast";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useForm, FieldValues, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
-import { getUserInfo } from "@/services/authService";
 import HeaderSection from "../../../components/HeaderSection/HeaderSection";
 
 const defaultTheme = createTheme();
